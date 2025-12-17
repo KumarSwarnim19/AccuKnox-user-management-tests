@@ -264,3 +264,11 @@ def test_orangehrm_e2e(page: Page):
 
     print("\n--- Test Completed Successfully! ---")
 ```
+
+## Project Execution Evidence
+
+### 1. Project Directory Structure
+![Project Structure](screenshots/project_structure.jpg)
+
+### 2. Test Execution Output (Passed)
+![Terminal Output](screenshots/terminal_success.jpg)
