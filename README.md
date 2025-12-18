@@ -265,10 +265,143 @@ def test_orangehrm_e2e(page: Page):
     print("\n--- Test Completed Successfully! ---")
 ```
 
-## Project Execution Evidence
+## 📊Execution Evidence
 
 ### 1. Project Directory Structure
-![Project Structure](screenshots/project_structure.jpg)
+![Project Structure](screenshots_Part1/project_structure.jpg)
 
 ### 2. Test Execution Output (Passed)
-![Terminal Output](screenshots/terminal_success.jpg)
+![Terminal Output](screenshots_Part1/terminal_success.jpg)
+
+
+---
+
+
+
+
+# System Health Monitoring Solutions
+
+**Implementing system and application health monitoring using Python.**
+
+### 📂 Directory Structure
+The scripts are located in the `monitoring_scripts/` directory:
+- **`system_monitor.py`**: Monitors CPU, Memory, and Disk usage (1).
+- **`app_checker.py`**: Verifies if the target web application is Up or Down (4).
+
+### ⚙️ Setup & Execution
+
+1. Install Dependencies:
+   ```bash
+   pip install psutil requests
+   ```
+
+2. Run System Health Monitor:
+```bash
+python monitoring_scripts/system_monitor.py
+```
+
+3. Run Application Health Checker:
+ ```bash
+python monitoring_scripts/app_checker.py
+```
+
+## Source Code Implementation
+
+### 1. System Health Monitor (1)
+File Path: monitoring_scripts/system_monitor.py
+```python
+import psutil
+import logging
+
+# Setup logging to save alerts to a file
+logging.basicConfig(
+    filename='system_health.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+def check_system_health():
+    print("--- Starting System Health Check ---")
+    
+    # 1. CPU Usage
+    cpu_usage = psutil.cpu_percent(interval=1)
+    if cpu_usage > 80:
+        alert = f"CRITICAL: High CPU Usage detected: {cpu_usage}%"
+        print(alert)
+        logging.warning(alert)
+    else:
+        print(f"CPU Usage: {cpu_usage}% (Normal)")
+
+    # 2. Memory Usage
+    memory = psutil.virtual_memory()
+    mem_usage = memory.percent
+    if mem_usage > 80:
+        alert = f"CRITICAL: High Memory Usage detected: {mem_usage}%"
+        print(alert)
+        logging.warning(alert)
+    else:
+        print(f"Memory Usage: {mem_usage}% (Normal)")
+
+    # 3. Disk Space
+    disk = psutil.disk_usage('/')
+    disk_usage = disk.percent
+    if disk_usage > 90:
+        alert = f"CRITICAL: Low Disk Space! Used: {disk_usage}%"
+        print(alert)
+        logging.warning(alert)
+    else:
+        print(f"Disk Usage: {disk_usage}% (Normal)")
+
+    print("--- Health Check Complete ---")
+
+if __name__ == "__main__":
+    check_system_health()
+```
+
+### 2. Application Health Checker (4)
+File Path: monitoring_scripts/app_checker.py
+
+```python
+import requests
+
+def check_app_status(url):
+    print(f"--- Checking Application Status for: {url} ---")
+    try:
+        # Send a request to the URL (Wait up to 5 seconds)
+        response = requests.get(url, timeout=5)
+        
+        # Check if the status code is 200 (OK)
+        if response.status_code == 200:
+            print(f"✅ SUCCESS: Application is UP. (Status Code: {response.status_code})")
+        else:
+            print(f"⚠️  WARNING: Application is reachable but returned status: {response.status_code}")
+            
+    except requests.exceptions.ConnectionError:
+        print("❌ CRITICAL: Application is DOWN. (Connection Failed)")
+    except requests.exceptions.Timeout:
+        print("❌ CRITICAL: Application is DOWN. (Request Timed Out)")
+    except Exception as e:
+        print(f"❌ ERROR: An unexpected error occurred: {e}")
+
+if __name__ == "__main__":
+    # We are checking the OrangeHRM demo site
+    target_url = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login" 
+    check_app_status(target_url)
+```
+
+### 📊Execution Evidence 
+
+### 1. System Health Monitor Output
+
+(Successfully detects high memory/disk usage)
+![System Monitor](screenshots_Part2/system_monitor.jpg)
+
+### 2. Application Health Checker Output
+
+(Successfully verifies the app is UP)
+![App Checker](screenshots_Part2/app_checker.jpg)
+
+### 📂 Final Project Structure
+
+Complete project structure showing the separation of concerns
+![Full Project Structure](screenshots_Part2/Full_Project_structure.jpg)
